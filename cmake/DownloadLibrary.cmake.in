@@ -1,0 +1,17 @@
+# define a project to downloadint libraries
+
+cmake_minimum_required(VERSION 2.8.12)
+
+project(@DOWNLOAD_PROJECT_NAME@-download NONE)
+
+include(ExternalProject)
+ExternalProject_Add(
+  @DOWNLOAD_PROJECT_NAME@
+  URL @DOWNLOAD_PROJECT_URL@
+  URL_HASH MD5=@DOWNLOAD_PROJECT_MD5@
+  SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/@DOWNLOAD_PROJECT_NAME@-src"
+  BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/@DOWNLOAD_PROJECT_NAME@-build"
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ""
+  TEST_COMMAND "")
