@@ -1,5 +1,5 @@
 #include "dispatcher.h"
-
+#include "spdlog/spdlog.h"
 #include <cassert>
 
 namespace tl {
@@ -9,7 +9,11 @@ extern "C" void dispatcherTimerCB(int, short, void* ptr) {
   dispather->timerCB();
 }
 
-Dispatcher::Dispatcher() {}
+Dispatcher::Dispatcher() {
+  stop_ = true;
+  ev_base_ = event_base_new();
+  ev_timer_ = event_new(ev_base_, -1, EV_PERSIST, dispatcherTimerCB, this);
+}
 
 Dispatcher::~Dispatcher() {
   event_free(ev_timer_);
@@ -19,9 +23,6 @@ Dispatcher::~Dispatcher() {
 void Dispatcher::dispatch() {
   {
     std::unique_lock<std::mutex> lock(mu_);
-    assert(stop_);
-    ev_base_ = event_base_new();
-    ev_timer_ = event_new(ev_base_, -1, EV_PERSIST, dispatcherTimerCB, this);
     stop_ = false;
   }
 

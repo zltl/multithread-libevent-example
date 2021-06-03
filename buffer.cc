@@ -102,11 +102,6 @@ void buffer::data(const void *&data, const std::size_t len) {
 }
 
 void buffer::dataChunk(const void *&data, std::size_t &len) {
-  if (size_ == 0) {
-    data = nullptr;
-    len = 0;
-    return;
-  }
   auto &ch = chunk_list_.back();
   data = ch.p + ch.offset;
   len = ch.end - ch.offset;

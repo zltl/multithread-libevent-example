@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.9)
 
 project(
@@ -18,8 +17,9 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-builtin-strlen")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-builtin-strlen")
 # sanitize
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -fsanitize-address-use-after-scope")
-
+set(CMAKE_CXX_FLAGS
+    "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -fsanitize-address-use-after-scope"
+)
 
 # download libevent
 set(EVENT__LIBRARY_TYPE "STATIC")
@@ -36,18 +36,29 @@ import_library(
   82358affdd7ab94854c8ee73a180fc53)
 add_subdirectory(${IMPORT_SRC} ${IMPORT_BUILD} EXCLUDE_FROM_ALL)
 
+import_library(
+  spdlog https://github.com/gabime/spdlog/archive/refs/tags/v1.8.5.zip
+  06cd154999c8019f52e57afe4a8068f0)
+add_subdirectory(${IMPORT_SRC} ${IMPORT_BUILD} EXCLUDE_FROM_ALL)
+
 # add target
 set(EXEC_NAME multithread-libevent-example)
-add_executable(${EXEC_NAME}
+add_executable(
+  ${EXEC_NAME}
   main.cc
   buffer.cc
   buffer.h
   thread_pool.h
   thread_pool.cc
   dispatcher.h
-  dispatcher.cc)
+  dispatcher.cc
+  handler.cc
+  handler.h
+  listener.cc
+  listener.h)
 # dependency libraries
-target_link_libraries(${EXEC_NAME} event_core event_pthreads event_extra)
+target_link_libraries(${EXEC_NAME} event_core event_pthreads event_extra
+                      spdlog::spdlog)
 # Be regorous
 target_compile_options(${EXEC_NAME} PUBLIC -Werror -Wall -Wextra -pedantic)
 

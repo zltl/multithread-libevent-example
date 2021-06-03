@@ -30,11 +30,13 @@ class Dispatcher {
 
   void timerCB();
 
+  event_base* ev_base() { return ev_base_; }
+
  private:
-  struct event_base* ev_base_;
-  struct event* ev_timer_;
+  struct event_base* ev_base_ = nullptr;
+  struct event* ev_timer_ = nullptr;
   std::queue<std::function<void()> > post_callbacks_;
-  bool stop_;
+  bool stop_ = false;
   std::mutex mu_;
   std::condition_variable cond_;
 };
