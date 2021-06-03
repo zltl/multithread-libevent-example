@@ -12,12 +12,12 @@ extern "C" void listener_event_cb(evutil_socket_t fd, short what, void* ptr) {
 }
 
 Listener::~Listener() {
+  if (ev_) {
+    event_free(ev_);
+  }
   if (fd_ >= 0) {
     close(fd_);
     fd_ = -1;
-  }
-  if (ev_) {
-    event_free(ev_);
   }
 }
 
@@ -37,7 +37,7 @@ int Listener::open(Dispatcher* disp,
   }
   int r = setsockopt(fd_, SOL_SOCKET, opt, (const void*)&one, sizeof(one));
   if (r < 0) {
-    SPDLOG_ERROR("setsockopt, errno=%d, %s", errno ,strerror(errno));
+    SPDLOG_ERROR("setsockopt, errno=%d, %s", errno, strerror(errno));
     return -1;
   }
   if (evutil_make_socket_nonblocking(fd_) < 0) {
