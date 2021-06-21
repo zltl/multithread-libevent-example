@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <functional>
+
 #include "spdlog/spdlog.h"
 
 namespace tl {
@@ -34,8 +35,16 @@ void ThreadPool::loop() {
     {
       // wait for new task or stop signal
       std::unique_lock<std::mutex> lock(tasks_mutex_);
-      condition_.wait(lock,
-                      [this] { return this->stop_ || !this->tasks_.empty(); });
+      condition_.wait(lock, [this] {
+        bool allempty = true;
+        for (auto tp : this->tasks_) {
+          if (!tp.empty()) {
+            allempty = false;
+            break;
+          }
+        }
+        return this->stop_ || !allempty;
+      });
 
       // exit loop when stop and no more tasks
       if (stop_ && tasks_.empty()) return;
