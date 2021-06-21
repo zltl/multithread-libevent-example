@@ -47,7 +47,14 @@ void ThreadPool::loop() {
       });
 
       // exit loop when stop and no more tasks
-      if (stop_ && tasks_.empty()) return;
+      bool allempty = true;
+      for (auto tp : this->tasks_) {
+        if (!tp.empty()) {
+          allempty = false;
+          break;
+        }
+      }
+      if (stop_ && allempty) return;
 
       for (auto& task_list : tasks_) {
         if (task_list.empty()) {
