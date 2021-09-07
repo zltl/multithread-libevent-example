@@ -1,5 +1,8 @@
 # multithread-libevent-example
 
+
+[[https://quant67.com/post/ioevent/multithread-libevent.html][document]]
+
 libevent 多线程使用。
 
 编译：
@@ -9,3 +12,4 @@ cd build
 cmake ..
 make
 #+end_src
+
